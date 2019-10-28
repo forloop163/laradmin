@@ -28,7 +28,6 @@ class Auth
 
     public function hasPermissionsSchema()
     {
-        return Schema::hasTable('permissions') ? 1 : 0;
+        return Schema::hasTable('permissions');
     }
-
 }
