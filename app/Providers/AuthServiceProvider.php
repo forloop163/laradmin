@@ -31,6 +31,8 @@ class AuthServiceProvider extends ServiceProvider
     public function registerGates()
     {
         $authBusiness = new AuthBusiness;
-        // $authBusiness->registerGates();
+        if ($authBusiness->hasPermissionsSchemaFromCache()) {
+            $authBusiness->registerGates();
+        }
     }
 }
