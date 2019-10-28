@@ -31,10 +31,4 @@ class Auth
         return Schema::hasTable('permissions') ? 1 : 0;
     }
 
-    public function hasPermissionsSchemaFromCache() :bool
-    {
-        return Cache::rememberForever('has_permissions_table', function () {
-            return $this->hasPermissionsSchema();
-        }) === 1;
-    }
 }

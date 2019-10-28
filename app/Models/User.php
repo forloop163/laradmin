@@ -45,8 +45,8 @@ class User extends Authenticatable
     {
         $permissions = [];
 
-        $this->roles->map(function ($item) use (&$permissions) {
-            $item->permissions->map(function ($row) use (&$permissions) {
+        $this->roles->map(function ($role) use (&$permissions) {
+            $role->permissions->map(function ($row) use (&$permissions) {
                 $permissions[] = $row->name;
             });
         });

@@ -19,9 +19,6 @@ class LaradminMiddleware
     public function handle($request, Closure $next)
     {
         $routeName = Route::currentRouteName();
-        $authBusiness = new AuthBusiness;
-
-        $user = $authBusiness->authUser();
 
         if (Gate::denies($routeName)) {
             throw new AuthenticationException('您的权限不足！');

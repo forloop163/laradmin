@@ -6,9 +6,6 @@ use Faker\Generator as Faker;
 
 class RoleTableSeeder extends Seeder
 {
-    protected $roles = [
-        ''
-    ];
 
     /**
      * Run the database seeds.
