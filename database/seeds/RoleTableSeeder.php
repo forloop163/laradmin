@@ -25,12 +25,7 @@ class RoleTableSeeder extends Seeder
             'updated_at' => \Illuminate\Support\Carbon::now(),
         ]);
 
-        $ids = [];
 
-        for ($i = 1; $i++; $i <= 22) {
-            $ids[] = $i;
-        }
-
-        $role->permissions()->attach($ids);
+        $role->permissions()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]);
     }
 }
