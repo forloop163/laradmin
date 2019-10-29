@@ -53,7 +53,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="onCancelHandle">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px">
         <el-form-item v-show="dialogStatus === 'create'" label="上级">
-          <el-select v-model.number="temp.parent" placeholder="选择上级">
+          <el-select v-model.number="temp.parent" @change="onParentHandle" placeholder="选择上级">
             <el-option :label="currentData.label" :value="currentData.id"></el-option>
             <el-option :label="rootDir.label" :value="rootDir.value"></el-option>
           </el-select>
@@ -67,8 +67,8 @@
         <el-form-item label="路径" prop="path">
           <el-input v-model.trim="temp.path" placeholder="/system"></el-input>
         </el-form-item>
-        <el-form-item label="跳转" prop="redirect">
-          <el-input v-model.trim="temp.redirect" placeholder="noRedirect"></el-input>
+        <el-form-item v-show="showRedirect" label="跳转" prop="redirect">
+          <el-input v-model.trim="temp.redirect" placeholder="noRedirect/tab按钮跳转路径"></el-input>
         </el-form-item>
         <el-form-item label="icon">
           <el-input v-model.trim="temp.meta.icon" placeholder="图标"></el-input>
@@ -140,6 +140,7 @@ export default {
         currentData: {}, // 操作行数据
         defaultCheckedKeys: [],
         rolesList: [],
+        showRedirect: false,
         rules: {
           name: [
             { required: true, message: '名称必须填写', trigger: 'blur' },
@@ -210,7 +211,7 @@ export default {
             message: '已取消删除',
             type: 'success',
             duration: 2000
-          })          
+          })
         });
       },
       onNodeDropHandle(draggingNode, dropNode, dropType, ev) {
@@ -312,6 +313,15 @@ export default {
             duration: 2000
           })
         })
+      },
+      onParentHandle(val) {
+        if (val === 0) {
+          this.temp.component = 'Layout'
+          this.showRedirect = true
+        } else {
+          this.temp.component = ''
+          this.showRedirect = false
+        }
       }
     }
   };
