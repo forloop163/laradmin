@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,11 +17,11 @@ class Role extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\Models\User', 'users', 'role_id', 'user_id');
+        return $this->belongsToMany('App\Models\System\User', 'users', 'role_id', 'user_id');
     }
 
     public function permissions()
     {
-        return $this->belongsToMany('App\Models\Permission', 'role_permission', 'role_id', 'permission_id')->orderBy('sort');
+        return $this->belongsToMany('App\Models\System\Permission', 'role_permission', 'role_id', 'permission_id')->orderBy('sort');
     }
 }

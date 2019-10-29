@@ -1,9 +1,8 @@
 <?php
 namespace App\Business\System;
 
-use App\Models\Permission as PermissionModel;
+use App\Models\System\Permission as PermissionModel;
 use App\Business\System\Permission as PermissionBusiness;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use App\Models\Permission as PermissionModel;
+use App\Models\System\Permission as PermissionModel;
 use App\Business\System\Permission as PermissionsBusiness;
 
 class User
@@ -57,7 +57,7 @@ class User
         }
 
         $cacheKey = 'laradmin-' . $user->id . '-login-user';
-        return Cache::remember($cacheKey, 300 ,function () use ($user) {
+        return Cache::remember($cacheKey, 300, function () use ($user) {
             return $this->LoginUserInfo($user);
         });
     }
@@ -70,7 +70,7 @@ class User
     public function LoginUserInfo($user)
     {
         $permissionBusiness = new PermissionsBusiness(new PermissionModel);
-        $permissions =$permissionBusiness->meauTree();
+        $permissions = $permissionBusiness->meauTree();
 
         // TODO 过滤 active = 1， 有效的角色
         $roles = $user->roles()->pluck('name')->toArray();

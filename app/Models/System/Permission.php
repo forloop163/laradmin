@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,7 +23,7 @@ class Permission extends Model
 
     public function roles()
     {
-        return $this->belongsToMany('App\Models\Role', 'role_permission', 'permission_id', 'role_id');
+        return $this->belongsToMany('App\Models\System\Role', 'role_permission', 'permission_id', 'role_id');
     }
 
     // 覆盖 model 方法

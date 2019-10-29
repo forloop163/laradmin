@@ -4,9 +4,8 @@ namespace App\Http\Controllers\System;
 
 use App\Business\System\User as UserBusiness;
 use App\Http\Controllers\BaseController;
-use App\Models\User as UserModel;
+use App\Models\System\User as UserModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends BaseController
 {

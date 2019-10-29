@@ -5,7 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Business\System\Role as RoleBusiness;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
-use App\Models\Role as RoleModel;
+use App\Models\System\Role as RoleModel;
 
 class RoleController extends BaseController
 {

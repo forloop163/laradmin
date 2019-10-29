@@ -5,7 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Business\System\Permission;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
-use App\Models\Permission as PermissionModel;
+use App\Models\System\Permission as PermissionModel;
 
 class PermissionController extends BaseController
 {

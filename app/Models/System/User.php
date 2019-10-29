@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,7 +38,7 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany('App\Models\Role', 'user_role', 'user_id', 'role_id');
+        return $this->belongsToMany('App\Models\System\Role', 'user_role', 'user_id', 'role_id');
     }
 
     public function hasAccess($permission)
@@ -55,3 +55,4 @@ class User extends Authenticatable
         return in_array($permission, $permissions);
     }
 }
+
