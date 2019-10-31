@@ -7,6 +7,6 @@ class Log
 {
     public static function write($data)
     {
-        return \App\System\Models\Log::query()->create($data);
+        return \App\Models\System\Log::query()->create($data);
     }
 }
