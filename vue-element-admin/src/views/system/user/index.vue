@@ -40,13 +40,11 @@
       </el-table-column>
       <el-table-column
         prop="mobile"
-        width="150px"
         label="手机号码"
         >
       </el-table-column>
       <el-table-column
         prop="email"
-        width="200px"
         show-overflow-tooltip
         label="邮箱号码"
         >
@@ -55,7 +53,6 @@
         prop="last_login"
         label="最后登陆时间"
         sortable="custom"
-        width="130px"
         >
       </el-table-column>
       <el-table-column label="操作" align="center" width="270px" class-name="small-padding fixed-width">
@@ -317,7 +314,7 @@ export default {
             message: '操作失败',
             type: 'danger',
             duration: 2000
-          })          
+          })
         });
       })
     },
@@ -336,7 +333,7 @@ export default {
           message: '操作失败',
           type: 'danger',
           duration: 2000
-        })          
+        })
       })
     },
     handleFreezeUser(row) {
@@ -354,7 +351,7 @@ export default {
           message: '操作失败',
           type: 'danger',
           duration: 2000
-        })          
+        })
       })
     }
   }
