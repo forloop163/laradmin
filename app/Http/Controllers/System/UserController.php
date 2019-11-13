@@ -18,7 +18,7 @@ class UserController extends BaseController
                 return $query->where('username', 'like', '%' . $value . '%');
             },
             'email' => function ($query, $value, $requert) {
-                return $query->where('email', $value);
+                return $query->where('email', 'like', '%' . $value . '%');
             },
             'mobile' => function ($query, $value, $requert) {
                 return $query->where('mobile', $value);

@@ -9,10 +9,10 @@ export function login(data) {
 }
 
 export function getInfo() {
-  return request({
-    url: '/system/users/0',
-    method: 'get',
-  })
+    return request({
+        url: '/auth/user/info',
+        method: 'get'
+    })
 }
 
 export function logout() {
