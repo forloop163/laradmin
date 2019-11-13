@@ -24,7 +24,7 @@ class CreatePermissionsTable extends Migration
             $table->tinyInteger('display')->default(0)->comment('菜单栏内是否展示');
             $table->string('component')->nullable()->comment('组件位置');
             $table->tinyInteger('is_api')->default(0)->comment('Api接口');
-            $table->string('sort')->default(0)->comment('排序');
+            $table->integer('sort')->default(0)->comment('排序');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers;
 
+use Illuminate\Support\Arr;
 
 class TreeHelper
 {
@@ -23,6 +24,10 @@ class TreeHelper
      */
     private static $child = 'children';
 
+    private static $childNodes = [];
+
+    protected static $sort = null;
+
     /**
      * 修改主键名称、父键名称、子节点名称.
      *
@@ -41,6 +46,11 @@ class TreeHelper
         if (!empty($child)) {
             self::$child = $child;
         }
+    }
+
+    public static function setSort($sort)
+    {
+        self::$sort = $sort;
     }
 
     /**
@@ -64,11 +74,28 @@ class TreeHelper
             if (!empty($child)) {
                 $v[self::$child] = $child;
             } else {
+                self::$childNodes[] = $v[self::$primary];
                 $v[self::$child] = [];
             }
         }
         unset($v);
-        return $children;
+        return self::sort($children);
+    }
+
+    public static function sort($data)
+    {
+        if (!self::$sort) {
+            return $data;
+        }
+
+        $data = Arr::sort($data, function ($value) {
+            return (int) $value[self::$sort['sort']];
+        });
+
+        if (self::$sort['by'] === 'desc') {
+            return array_reverse($data);
+        }
+        return $data;
     }
 
     /**
@@ -87,7 +114,12 @@ class TreeHelper
                 unset($v);
             }
         }
-        return $children;
+
+        return self::sort($children);
     }
 
+    public static function getChildNodes()
+    {
+        return self::$childNodes;
+    }
 }

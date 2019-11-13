@@ -28,9 +28,9 @@ class Handler extends ExceptionHandler
 
     /**
      * Report or log an exception.
-     *
-     * @param  \Exception  $exception
-     * @return void
+     * @param Exception $exception
+     * @return mixed|void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
@@ -46,6 +46,24 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->is('api/*')) {
+            $error = $this->convertExceptionToResponse($exception);
+
+            $response = [
+                'code' => $error->getStatusCode(),
+                'status' => 'Render Error',
+            ];
+
+            if (config('app.debug')) {
+                $response['message'] = $exception->getMessage();
+                $response['file'] = $exception->getFile();
+                $response['line'] = $exception->getLine();
+                $response['trace'] = $exception->getTraceAsString();
+            }
+
+            return response()->json($response);
+        }
+
         return parent::render($request, $exception);
     }
 }

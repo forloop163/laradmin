@@ -14,7 +14,12 @@ use Illuminate\Http\Request;
 */
 Auth::routes();
 
-Route::middleware(['auth:api', 'laradmin'])->group(function () {
+Route::middleware(['api', 'auth:web'])->group(function () {
+    // auth
+    Route::get('/auth/user/info', '\App\Http\Controllers\Auth\UserController@userInfo')->name('user.user_info');
+});
+
+Route::middleware(['api', 'auth:web', 'laradmin'])->group(function () {
     // 后台用户
     Route::resource('/system/users', '\App\Http\Controllers\System\UserController');
     Route::put('/system/users/{id}/reset', '\App\Http\Controllers\System\UserController@reset')->name('users.reset');

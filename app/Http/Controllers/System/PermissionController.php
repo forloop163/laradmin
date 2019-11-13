@@ -17,10 +17,14 @@ class PermissionController extends BaseController
         $this->fields['update'] = ['name', 'label', 'path', 'meta', 'display', 'component', 'parent', 'redirect'];
     }
 
-
+    /**
+     * index
+     * @param Request $request
+     * @return mixed
+     */
     public function index(Request $request)
     {
-        $business = new Permission($this->query);
+        $business = new Permission;
 
         return $this->success($business->tree());
     }
@@ -35,7 +39,7 @@ class PermissionController extends BaseController
     {
         $params = $request->only(['draggingNode', 'dropNode', 'dropType']);
 
-        $business = new Permission($this->query);
+        $business = new Permission;
         $business->nodeDrop($params['draggingNode'], $params['dropNode'], $params['dropType']);
 
         return $this->success([]);

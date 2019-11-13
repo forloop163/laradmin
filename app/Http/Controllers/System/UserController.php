@@ -40,7 +40,7 @@ class UserController extends BaseController
 
     public function performStore($data)
     {
-        $business = new UserBusiness($this->query);
+        $business = new UserBusiness;
         $create = $business->create($data);
         $this->writeLog($create, 'store', $data);
 
@@ -49,18 +49,10 @@ class UserController extends BaseController
 
     public function performUpdate($model, $data)
     {
-        $business = new UserBusiness($model);
+        $business = new UserBusiness;
         $business->update($data);
         $this->writeLog($model, 'update', $data);
 
         return $this->success($model);
-    }
-
-    public function show(Request $request, $id)
-    {
-        $user = $this->getUser();
-
-        $business = new UserBusiness($this->query);
-        return $this->success($business->loginUserInfoFromCache($user));
     }
 }

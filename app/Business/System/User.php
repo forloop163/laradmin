@@ -2,25 +2,22 @@
 
 namespace App\Business\System;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
-use App\Models\System\Permission as PermissionModel;
+use App\Business\BaseBusiness;
 use App\Business\System\Permission as PermissionsBusiness;
+use App\Models\System\User as UserModel;
 
-class User
+class User extends BaseBusiness
 {
-    protected $model;
-
-    public function __construct(Model $model)
-    {
-        $this->model = $model;
-    }
+    protected $modelClass = UserModel::class;
 
     public function create(array $data)
     {
-        $data['password'] = encrypt($data['password']);
+        $has = $this->model->where('username', $data['username'] ?? '')->orWhere('email', $data['username'] ?? '')->first();
+        if ($has) {
+            throw new \Exception('用户名或者邮箱已存在');
+        }
+
+        $data['password'] = bcrypt($data['password']);
         $roles = $data['roles'];
         unset($data['roles']);
 
@@ -32,10 +29,15 @@ class User
 
     public function update(array $data)
     {
+        $has = $this->model->where('id', '<>', $this->model->id)
+            ->where('username', $data['username'] ?? '')->orWhere('email', $data['username'] ?? '')->first();
+        if ($has) {
+            throw new \Exception('用户名或者邮箱已存在');
+        }
         $roles = $data['roles'];
         unset($data['roles']);
         if (isset($data['password']) && !empty($data['password'])) {
-            $data['password'] = $this->encryptPassword($data['password']);
+            $data['password'] = bcrypt($data['password']);
         }
         $this->model->fill($data);
 
@@ -45,23 +47,6 @@ class User
         return $this->model->save();
     }
 
-    /**
-     * 用户登陆信息缓存
-     * @param $user
-     * @return mixed
-     */
-    public function loginUserInfoFromCache($user)
-    {
-        if (config('app.env') == 'local') {
-            return $this->LoginUserInfo($user);
-        }
-
-        $cacheKey = 'laradmin-' . $user->id . '-login-user';
-        return Cache::remember($cacheKey, 300, function () use ($user) {
-            return $this->LoginUserInfo($user);
-        });
-    }
-
 
     /**
      * 用户登陆信息
@@ -69,53 +54,15 @@ class User
      */
     public function LoginUserInfo($user)
     {
-        $permissionBusiness = new PermissionsBusiness(new PermissionModel);
-        $permissions = $permissionBusiness->meauTree();
+        $permissionBusiness = new PermissionsBusiness;
+        $permissions = $permissionBusiness->meauTree($user);
 
-        // TODO 过滤 active = 1， 有效的角色
-        $roles = $user->roles()->pluck('name')->toArray();
-
-        $res = [
-            'user' => $user,
-            'roles' => $roles,
+        return [
+            'user' => ['username'=>$user->username],
             'permissions' => $permissions
         ];
-
-        $this->loginedCallBack($user);
-        return $res;
     }
 
-    /**
-     * 登陆成功后回调
-     * @param $user
-     * @return mixed
-     */
-    public function loginedCallBack($user)
-    {
-        $user->last_login = Carbon::now();
-        return $user->save();
-    }
-
-    /**
-     * 获取remember_token
-     * @return string
-     */
-    public function getApiToken($user)
-    {
-        return md5($user->id . Str::random(10)) . Str::random(32);
-    }
-
-    public function resetApiToken()
-    {
-        $effective = config('laradmin.token_time');
-        $deadline = Carbon::addHours(-1 * $effective);
-        $this->model->where('last_login', '<=', $deadline)->chuck(500, function ($rows) {
-            $rows->map(function ($item) {
-                $item->api_token = $this->getApiToken($item);
-                $item->save();
-            });
-        });
-    }
 
     /**
      * 加密密码
@@ -124,6 +71,6 @@ class User
      */
     public function encryptPassword($password)
     {
-        return encrypt($password);
+        return bcrypt($password);
     }
 }

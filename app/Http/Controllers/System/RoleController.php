@@ -33,7 +33,7 @@ class RoleController extends BaseController
 
     public function roles(Request $request)
     {
-        $business = new RoleBusiness($this->query);
+        $business = new RoleBusiness;
         $roles = $business->roles();
         return $this->success($roles);
     }

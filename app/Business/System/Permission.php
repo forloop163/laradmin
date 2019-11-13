@@ -1,17 +1,13 @@
 <?php
 namespace App\Business\System;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Business\BaseBusiness;
 use App\Helpers\TreeHelper;
+use App\Models\System\Permission as PermissionModel;
 
-class Permission
+class Permission extends BaseBusiness
 {
-    protected $model;
-
-    public function __construct(Model $model)
-    {
-        $this->model = $model;
-    }
+    protected $modelClass = PermissionModel::class;
 
     /**
      * 权限树
@@ -19,7 +15,8 @@ class Permission
      */
     public function tree()
     {
-        $data = $this->model->orderBy('sort')->get()->toArray();
+        $data = $this->model->orderBy('sort', 'desc')->get()->toArray();
+        TreeHelper::setSort(['sort'=> 'sort', 'by'=> 'desc']);
         return TreeHelper::makeTree($data, 0);
     }
 
@@ -27,14 +24,11 @@ class Permission
      * 菜单树
      * @return array
      */
-    public function meauTree()
+    public function meauTree($user)
     {
-        $permissions = $this->model->with('roles')->where('is_api', 0)
-            ->orderBy('sort')->get()->toArray();
-
-        foreach ($permissions as &$permission) {
-            $permission['meta']['roles'] = collect($permission['roles'])->pluck('name')->toArray();
-        }
+        $withoutApi = true;
+        $permissions = $user->hasPermissions($withoutApi)->toArray();
+        TreeHelper::setSort(['sort'=> 'sort', 'by'=> 'desc']);
         return TreeHelper::makeTree($permissions, 0);
     }
 
@@ -56,7 +50,8 @@ class Permission
         if ($type == 'before' || $type == 'after') {
             $parentId = $dropNode['parent'];
             // 排序
-            $children = clone ($this->model)->where('parent', $parentId)->orderBy('sort', 'asc')->get();
+            $children = $this->model->where('parent', $parentId)->orderBy('sort', 'desc')->get();
+
             $tmpIds = [];
             foreach ($children as $child) {
                 if ($child['id'] == $dropNode['id']) {
@@ -68,8 +63,13 @@ class Permission
                         $tmpIds[] = $child['id'];
                         $tmpIds[] = $draggingNode['id'];
                     }
+                } else if ($child['id'] == $draggingNode['id']) {
+                    continue;
+                } else {
+                    $tmpIds[] = $child['id'];
                 }
             }
+
             $this->updateSorts($tmpIds);
         } elseif ($type == 'inner') {
             $parentId = $dropNode['id'];
@@ -101,8 +101,9 @@ class Permission
      */
     public function updateSorts($ids)
     {
+        $count = count($ids);
         foreach ($ids as $key => $id) {
-            $this->model->where('id', $id)->update(['sort' => $key + 1]);
+            $this->model->where('id', $id)->update(['sort' => $count - $key]);
         }
     }
 }

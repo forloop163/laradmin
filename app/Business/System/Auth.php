@@ -15,7 +15,7 @@ class Auth
 
     public function registerGates()
     {
-        $permissionBusiness = new PermissionBusiness(new PermissionModel);
+        $permissionBusiness = new PermissionBusiness;
         $allPermissionNames = $permissionBusiness->getAllPermissionName();
 
         foreach ($allPermissionNames as $permissionName) {
@@ -23,10 +23,5 @@ class Auth
                 return $user->hasAccess($permissionName);
             });
         }
-    }
-
-    public function hasPermissionsSchema()
-    {
-        return Schema::hasTable('permissions');
     }
 }

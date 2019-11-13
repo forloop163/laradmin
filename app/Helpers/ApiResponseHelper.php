@@ -41,10 +41,10 @@ trait ApiResponseHelper
         $jsonpCallback = $this->jsonpCallback;
 
         if (!is_null($jsonpCallback)) {
-            return response()->jsonp($jsonpCallback, $data, $this->getStatusCode(), $header);
+            return response()->jsonp($jsonpCallback, $data, FoundationResponse::HTTP_OK, $header);
         }
 
-        return response()->json($data, $this->getStatusCode(), $header);
+        return response()->json($data, FoundationResponse::HTTP_OK, $header);
     }
 
     /**
@@ -55,7 +55,6 @@ trait ApiResponseHelper
      */
     public function status($status, array $data, $code = null)
     {
-
         if ($code) {
             $this->setStatusCode($code);
         }
@@ -66,8 +65,8 @@ trait ApiResponseHelper
         ];
 
         $data = array_merge($status, $data);
-        return $this->respond($data);
 
+        return $this->respond($data);
     }
 
     /**

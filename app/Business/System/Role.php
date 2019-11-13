@@ -1,16 +1,12 @@
 <?php
 namespace App\Business\System;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Business\BaseBusiness;
+use App\Models\System\Role as RoleModel;
 
-class Role
+class Role extends BaseBusiness
 {
-    protected $model;
-
-    public function __construct(Model $model)
-    {
-        $this->model = $model;
-    }
+    protected $modelClass =RoleModel::class;
 
     public function roles()
     {

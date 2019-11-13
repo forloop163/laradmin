@@ -5,6 +5,7 @@ namespace App\Models\System;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use phpDocumentor\Reflection\Types\Collection;
 
 class User extends Authenticatable
 {
@@ -15,7 +16,11 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['username', 'mobile', 'email', 'password', 'remember_token'];
+    protected $fillable = ['username', 'mobile', 'email', 'password'];
+
+    protected $guarded = [
+        'id'
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -23,7 +28,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password', 'remember_token'
     ];
 
     /**
@@ -41,18 +46,30 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\System\Role', 'user_role', 'user_id', 'role_id');
     }
 
-    public function hasAccess($permission)
+    public function hasPermissions($withoutApi = false)
     {
-        $permissions = [];
+        $permissions = collect();
 
-        $this->roles->map(function ($role) use (&$permissions) {
-            $role->permissions->map(function ($row) use (&$permissions) {
-                $permissions[] = $row->name;
+        $this->roles()->where('active', 1)->get()->map(function ($role) use ($permissions, $withoutApi) {
+            $role->permissions()->when($withoutApi, function ($query) {
+                return $query->where('is_api', 0);
+            })->orderBy('sort', 'desc')->get()->map(function ($row) use ($permissions) {
+                $permissions->add($row);
             });
         });
 
-        $permissions = array_unique($permissions);
-        return in_array($permission, $permissions);
+        return $permissions->unique('name');
+    }
+
+    public function hasPermissionNames()
+    {
+        return $this->hasPermissions()->map(function ($permission) {
+            return $permission->name;
+        });
+    }
+
+    public function hasAccess($permission): bool
+    {
+        return $this->hasPermissionNames()->has($permission);
     }
 }
-
