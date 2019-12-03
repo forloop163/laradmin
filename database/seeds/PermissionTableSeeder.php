@@ -356,6 +356,22 @@ class PermissionTableSeeder extends Seeder
             "component" => null,
             "sort" => "0",
             "is_api" => 1,
+        ],
+        [
+            "id" => 23,
+            "name" => "content.index",
+            "label" => "内容管理",
+            "redirect" => null,
+            "path" => "content",
+            "meta" => [
+                "title" => "内容管理",
+                "icon" => "list",
+            ],
+            "parent" => 1,
+            "display" => 1,
+            "component" => "system/content/index",
+            "sort" => "0",
+            "is_api" => 0,
         ]
     ];
 
@@ -367,7 +383,7 @@ class PermissionTableSeeder extends Seeder
     public function run()
     {
         foreach ($this->permissions as $permission) {
-            \App\Models\Permission::create($permission);
+            \App\Models\System\Permission::create($permission);
         }
     }
 }

@@ -4,9 +4,19 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Finder\Finder;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    protected $ignoreFiles = [
+        'api.php',
+        'console.php',
+        'channels.php',
+        'web.php',
+    ];
+
+    protected $laradminMiddlewares = ['api', 'auth:web', 'laradmin'];
+
     /**
      * This namespace is applied to your controller routes.
      *
@@ -39,7 +49,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapLaradminRoutes();
     }
 
     /**
@@ -69,5 +79,37 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+
+    /**
+     * Define the "laradmin" routes for the applaction
+     */
+    protected function mapLaradminRoutes()
+    {
+        $routeFileFinders = $this->loadRoutesFile(base_path('routes'));
+
+        foreach ($routeFileFinders as $finder) {
+            Route::prefix('api')
+                ->middleware($this->laradminMiddlewares)
+                ->namespace('\App\Http\Controllers')
+                ->group($finder->getPathname());
+        }
+    }
+
+    /**
+     * @param $path
+     * @return Finder
+     */
+    protected function loadRoutesFile($path)
+    {
+        $finder = new Finder();
+
+        return $finder
+            ->files()
+            ->ignoreDotFiles(true)
+            ->name('*.php')
+            ->exclude($this->ignoreFiles)
+            ->in($path);
     }
 }
