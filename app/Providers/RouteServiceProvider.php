@@ -109,7 +109,7 @@ class RouteServiceProvider extends ServiceProvider
             ->files()
             ->ignoreDotFiles(true)
             ->name('*.php')
-            ->exclude($this->ignoreFiles)
+            ->notPath($this->ignoreFiles)
             ->in($path);
     }
 }
