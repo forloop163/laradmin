@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use App\Exceptions\BusinessException;
+use Illuminate\Support\Facades\Validator;
 
 class BusinessHelper
 {
@@ -48,6 +49,16 @@ class BusinessHelper
      * @var string | array
      */
     protected $select = '*';
+
+    /**
+     * @var array
+     */
+    protected $validateRule = [];
+
+    /**
+     * @var array
+     */
+    protected $validateMessage = [];
 
     /**
      * BusinessHelper constructor.
@@ -108,9 +119,33 @@ class BusinessHelper
         return $this;
     }
 
+    /**
+     * @param $searchHandles
+     * @return $this
+     */
     public function setSearchHandle($searchHandles)
     {
         $this->searchHandles = $searchHandles;
+        return $this;
+    }
+
+    /**
+     * @param $validateRule
+     * @return $this
+     */
+    public function setValidateRule($validateRule)
+    {
+        $this->validateRule = $validateRule;
+        return $this;
+    }
+
+    /**
+     * @param $validateMessage
+     * @return $this
+     */
+    public function setValidateMessage($validateMessage)
+    {
+        $this->validateMessage = $validateMessage;
         return $this;
     }
 
@@ -208,7 +243,12 @@ class BusinessHelper
     public function store($storeFields)
     {
         $requestOnly = $this->request->only($storeFields);
-        return $this->getQuery()->insert($requestOnly);
+
+        $this->setValidateRule($this->validateRule['store'])
+            ->setValidateMessage($this->validateMessage['store'])
+            ->validate($requestOnly);
+
+        return $this->getQuery()->create($requestOnly);
     }
 
     /**
@@ -223,8 +263,12 @@ class BusinessHelper
         if (!$row) {
             throw new BusinessException('Not Found');
         }
-
         $update = $this->request->only($updateFields);
+
+        $this->setValidateRule($this->validateRule['update'])
+            ->setValidateMessage($this->validateMessage['update'])
+            ->validate($update);
+
         $row->fill($update);
         return $row->save();
     }
@@ -257,5 +301,19 @@ class BusinessHelper
     public function freeze($id)
     {
         return $this->getQuery()->where('id', $id)->update(['active' => 0]);
+    }
+
+    /**
+     * @param $data
+     * @throws BusinessException
+     */
+    private function validate($data)
+    {
+        if (!empty($this->validateRule)) {
+            $validator = Validator::make($data, $this->validateRule, $this->validateMessage);
+            if ($validator->fails()) {
+                throw new BusinessException($validator->errors()->first());
+            }
+        }
     }
 }

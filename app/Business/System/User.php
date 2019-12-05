@@ -5,6 +5,9 @@ namespace App\Business\System;
 use App\Business\BaseBusiness;
 use App\Business\System\Permission as PermissionsBusiness;
 use App\Models\System\User as UserModel;
+use Illuminate\Support\Facades\Validator;
+use App\Exceptions\BusinessException;
+use Illuminate\Validation\Rule;
 
 class User extends BaseBusiness
 {
@@ -12,10 +15,26 @@ class User extends BaseBusiness
 
     public function create(array $data)
     {
-        $has = $this->model->where('username', $data['username'] ?? '')->orWhere('email', $data['username'] ?? '')->first();
-        if ($has) {
-            throw new \Exception('用户名或者邮箱已存在');
-        }
+        $rules = [
+            'username' => 'required|unique:users|max:30|min:6',
+            'mobile' => 'required|max:20',
+            'password' => 'required|min:6',
+            'email' => 'required|email'
+        ];
+        $messages = [
+            'username.required' => '请输入用户名(最少6位)',
+            'username.min' => '用户名最少6位',
+            'username.unique' => '用户名已存在',
+            'username.max' => '用户名最长30位',
+            'mobile.required' => '请输入手机号码',
+            'mobile.max' => '手机号码最长20位',
+            'password.required' => '请输入密码',
+            'password.min' => '请输入密码(最少6位)',
+            'email.required' => '请输入正确的邮箱号码',
+            'email.email' => '请输入正确的邮箱号码'
+        ];
+
+        $this->validate($data, $rules, $messages);
 
         $data['password'] = bcrypt($data['password']);
         $roles = $data['roles'];
@@ -27,24 +46,58 @@ class User extends BaseBusiness
         return $create;
     }
 
-    public function update(array $data)
+    private function validate($data, $rules, $messages)
     {
-        $has = $this->model->where('id', '<>', $this->model->id)
-            ->where('username', $data['username'] ?? '')->orWhere('email', $data['username'] ?? '')->first();
-        if ($has) {
-            throw new \Exception('用户名或者邮箱已存在');
+        $validator = Validator::make($data, $rules, $messages);
+        if ($validator->fails()) {
+            throw new BusinessException($validator->errors()->first());
         }
+    }
+
+    public function update(array $data, $id)
+    {
+        $model = $this->model->find($id);
+        if (!$model) {
+            throw new BusinessException('Not Found');
+        }
+
+        $rules = [
+            'username' => [
+                'required',
+                'max:30',
+                'min:6',
+                Rule::unique('users')->ignore($id),
+            ],
+            'mobile' => 'required|max:20',
+            'password' => 'min:6',
+            'email' => 'required|email'
+        ];
+
+        $messages = [
+            'username.required' => '请输入用户名(最少6位)',
+            'username.min' => '用户名最少6位',
+            'username.unique' => '用户名已存在',
+            'username.max' => '用户名最长30位',
+            'mobile.required' => '请输入手机号码',
+            'mobile.max' => '手机号码最长20位',
+            'password.min' => '请输入密码(最少6位)',
+            'email.required' => '请输入正确的邮箱号码',
+            'email.email' => '请输入正确的邮箱号码'
+        ];
+
+        $this->validate($data, $rules, $messages);
+
         $roles = $data['roles'];
         unset($data['roles']);
         if (isset($data['password']) && !empty($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         }
-        $this->model->fill($data);
+        $model->fill($data);
 
-        $this->model->roles()->detach();
-        $this->model->roles()->attach($roles);
+        $model->roles()->detach();
+        $model->roles()->attach($roles);
 
-        return $this->model->save();
+        return $model->save();
     }
 
 

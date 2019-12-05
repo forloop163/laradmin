@@ -29,6 +29,11 @@ class BaseController
         'sortable' => [],
     ];
 
+    protected $validateRules = [
+        'create'  => [],
+        'update' => []
+    ];
+
     public function index(Request $request)
     {
         $businessHelper = new BusinessHelper($request);

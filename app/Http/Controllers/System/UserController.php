@@ -38,21 +38,21 @@ class UserController extends BaseController
         $this->fields['sortable'] = ['id', 'created_at', 'updated_at', 'last_login'];
     }
 
-    public function performStore($data)
+    public function store(Request $request)
     {
         $business = new UserBusiness;
+        $data = $request->only($this->fields['store']);
         $create = $business->create($data);
-        $this->writeLog($create, 'store', $data);
 
         return $this->success($create);
     }
 
-    public function performUpdate($model, $data)
+    public function update(Request $request, $id)
     {
         $business = new UserBusiness;
-        $business->update($data);
-        $this->writeLog($model, 'update', $data);
+        $data = $request->only($this->fields['update']);
+        $update = $business->update($data, $id);
 
-        return $this->success($model);
+        return $this->success($update);
     }
 }
