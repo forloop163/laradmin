@@ -166,7 +166,7 @@ class BusinessHelper
      */
     protected function setIndexParams()
     {
-        $size = (int) $this->request->get('pageSize', 20);
+        $size = (int)$this->request->get('pageSize', 20);
         $sort = $this->request->get('sort', []);
         if (!is_array($sort)) {
             $sort = json_decode($sort, true);
@@ -244,9 +244,7 @@ class BusinessHelper
     {
         $requestOnly = $this->request->only($storeFields);
 
-        $this->setValidateRule($this->validateRule['store'])
-            ->setValidateMessage($this->validateMessage['store'])
-            ->validate($requestOnly);
+        $this->validate($requestOnly);
 
         return $this->getQuery()->create($requestOnly);
     }
@@ -280,7 +278,7 @@ class BusinessHelper
      */
     public function destroy($id)
     {
-        return $this->getQuery()->delete($id);
+        return $this->getQuery()->where('id', $id)->delete();
     }
 
     /**

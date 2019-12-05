@@ -30,12 +30,12 @@ class BaseController
     ];
 
     protected $validateRules = [
-        'create'  => [],
+        'store'  => [],
         'update' => []
     ];
 
     protected $validateMessage = [
-        'create'  => [],
+        'store'  => [],
         'update' => []
     ];
 
@@ -61,15 +61,21 @@ class BaseController
     public function store(Request $request)
     {
         $businessHelper = new BusinessHelper($request);
-        $create = $businessHelper->setQuery($this->query)->store($this->fields['store']);
+        $create = $businessHelper->setQuery($this->query)
+            ->setValidateRule($this->validateRules['store'])
+            ->setValidateMessage($this->validateMessage['store'])
+            ->store($this->fields['store']);
 
-        $this->success($create);
+        return $this->success($create);
     }
 
     public function update(Request $request, $id)
     {
         $businessHelper = new BusinessHelper($request);
-        $update = $businessHelper->setQuery($this->query)->update($id, $this->fields['update']);
+        $update = $businessHelper->setQuery($this->query)
+            ->setValidateRule($this->validateRules['update'])
+            ->setValidateMessage($this->validateMessage['update'])
+            ->update($id, $this->fields['update']);
 
         return $this->success($update);
     }

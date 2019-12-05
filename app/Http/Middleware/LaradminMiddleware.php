@@ -20,7 +20,7 @@ class LaradminMiddleware
         $routeName = Route::currentRouteName();
 
         if (Gate::denies($routeName)) {
-            // throw new AuthenticationException('您的权限不足！');
+             throw new AuthenticationException('您的权限不足！');
         }
         return $next($request);
     }

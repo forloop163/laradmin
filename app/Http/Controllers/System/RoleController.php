@@ -6,6 +6,7 @@ use App\Business\System\Role as RoleBusiness;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use App\Models\System\Role as RoleModel;
+use Illuminate\Validation\Rule;
 
 class RoleController extends BaseController
 {
@@ -29,7 +30,6 @@ class RoleController extends BaseController
         $this->fields['update'] = ['name', 'desc', 'active'];
         $this->fields['sortable'] = ['id'];
     }
-
 
     public function roles(Request $request)
     {
