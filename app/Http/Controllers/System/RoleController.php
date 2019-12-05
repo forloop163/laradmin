@@ -14,10 +14,10 @@ class RoleController extends BaseController
         $this->query = $model;
 
         $this->handles = [
-            'name' => function ($query, $value, $request) {
+            'name' => function ($query, $value) {
                 return $query->where('name', 'like', '%' . $value . '%');
             },
-            'active' => function ($query, $value, $request) {
+            'active' => function ($query, $value) {
                 return $query->where('active', $value);
             }
         ];

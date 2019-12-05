@@ -1,3 +1,3 @@
 <?php
 
-Route::resource('/system/contents', 'System\UserController');
+Route::resource('/system/contents', 'System\ContentController');

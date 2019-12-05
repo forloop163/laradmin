@@ -14,19 +14,19 @@ class UserController extends BaseController
         $this->query = $model;
 
         $this->handles = [
-            'username' => function ($query, $value, $request) {
+            'username' => function ($query, $value) {
                 return $query->where('username', 'like', '%' . $value . '%');
             },
-            'email' => function ($query, $value, $requert) {
+            'email' => function ($query, $value) {
                 return $query->where('email', 'like', '%' . $value . '%');
             },
-            'mobile' => function ($query, $value, $requert) {
+            'mobile' => function ($query, $value) {
                 return $query->where('mobile', $value);
             },
-            'active' => function ($query, $value, $requert) {
+            'active' => function ($query, $value) {
                 return $query->where('active', $value);
             },
-            'is_admin' => function ($query, $value, $requert) {
+            'is_admin' => function ($query, $value) {
                 return $query->where('is_admin', $value);
             },
         ];
