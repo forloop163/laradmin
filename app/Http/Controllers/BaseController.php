@@ -34,6 +34,11 @@ class BaseController
         'update' => []
     ];
 
+    protected $validateMessage = [
+        'create'  => [],
+        'update' => []
+    ];
+
     public function index(Request $request)
     {
         $businessHelper = new BusinessHelper($request);
