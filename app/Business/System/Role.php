@@ -13,9 +13,10 @@ class Role extends BaseBusiness
         return $this->model->where('active', 1)->get(['id', 'name']);
     }
 
-    public function setPermssions($data)
+    public function setPermssions($id, $data)
     {
-        $this->model->permissions()->detach();
-        return $this->model->permissions()->attach($data);
+        $row = $this->model->find($id);
+        $row->permissions()->detach();
+        return $row->permissions()->attach($data);
     }
 }

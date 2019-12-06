@@ -40,6 +40,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function logs()
+    {
+        return $this->hasMany('App\Models\System\Log', 'user_id');
+    }
+
 
     public function roles()
     {
@@ -70,6 +75,6 @@ class User extends Authenticatable
 
     public function hasAccess($permission): bool
     {
-        return $this->hasPermissionNames()->has($permission);
+        return $this->hasPermissionNames()->contains($permission);
     }
 }

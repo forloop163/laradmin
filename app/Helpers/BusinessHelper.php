@@ -53,12 +53,18 @@ class BusinessHelper
     /**
      * @var array
      */
-    protected $validateRule = [];
+    protected $validateRule = [
+        'store' => [],
+        'update' => []
+    ];
 
     /**
      * @var array
      */
-    protected $validateMessage = [];
+    protected $validateMessage = [
+        'store' => [],
+        'update' => []
+    ];
 
     /**
      * BusinessHelper constructor.
@@ -263,9 +269,7 @@ class BusinessHelper
         }
         $update = $this->request->only($updateFields);
 
-        $this->setValidateRule($this->validateRule['update'])
-            ->setValidateMessage($this->validateMessage['update'])
-            ->validate($update);
+        $this->validate($update);
 
         $row->fill($update);
         return $row->save();

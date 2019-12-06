@@ -18,4 +18,9 @@ class ModelsObserver
             logger("$sql [$query->time]");
         });
     }
+
+    public function writeRequestLog()
+    {
+
+    }
 }

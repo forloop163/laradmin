@@ -15,11 +15,10 @@ class CreateSystemLogTable extends Migration
     {
         Schema::create('system_log', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
-            $table->integer('entity_id')->nullable()->comment('操作数据ID');
             $table->integer('user_id')->nullable()->comment('操作人');
-            $table->string('log', 500)->default('')->comment('记录');
-            $table->string('action')->default('')->comment('操作');
-            $table->string('model')->default('')->comment('模型');
+            $table->string('path')->default('')->comment('PATH');
+            $table->string('action')->nullable()->comment('操作');
+            $table->string('ip')->nullable()->comment('IP');
             $table->text('data')->nullable()->comment('数据');
             $table->timestamps();
         });

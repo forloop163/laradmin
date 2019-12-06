@@ -42,8 +42,8 @@ class RoleController extends BaseController
     {
         $data = $request->get('permissions', []);
 
-        $business = new RoleBusiness($this->find($this->query, $id));
-        $result = $business->setPermssions($data);
+        $business = new RoleBusiness;
+        $result = $business->setPermssions($id, $data);
         return $this->success($result);
     }
 }

@@ -42,6 +42,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             'throttle:60,1',
             'bindings',
+            'log'
         ],
     ];
 
@@ -64,7 +65,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'laradmin' => \App\Http\Middleware\LaradminMiddleware::class
+        'laradmin' => \App\Http\Middleware\LaradminMiddleware::class,
+        'log' => \App\Http\Middleware\LogOperation::class
     ];
 
     /**
