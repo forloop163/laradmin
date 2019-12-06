@@ -18,7 +18,7 @@ class LogOperation
      */
     public function handle(Request $request, \Closure $next)
     {
-        if ($request->path != 'api/login') {
+        if (!Auth::id()) {
             return $next($request);
         }
         if ($request->method() !== 'GET') {
@@ -27,7 +27,7 @@ class LogOperation
                 unset($data['_t']);
             }
             $log = [
-                'user_id' => Auth::id() ?: 0,
+                'user_id' => Auth::id(),
                 'path' => substr($request->path(), 0, 255),
                 'action' => $request->method(),
                 'ip' => $request->getClientIp(),
