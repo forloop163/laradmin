@@ -20,11 +20,19 @@ class LogController extends Controller
 
     public function index(Request $request)
     {
+        $searchHandles = [
+            'name' => function ($query, $value) {
+                return $query->whereHas('user', function ($q) use ($value) {
+                    return $q->where('username', 'like', '%' . $value . '%');
+                });
+            },
+        ];
         $businessHelper = new BusinessHelper($request);
         $data = $businessHelper
             ->setWith(['user' => function($query) {
                 return $query->select(['username', 'email', 'id']);
             }])
+            ->setSearchHandle($searchHandles)
             ->setQuery($this->query)
             ->setSortBy('id')
             ->setOrder('desc')

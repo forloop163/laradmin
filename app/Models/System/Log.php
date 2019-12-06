@@ -18,7 +18,7 @@ class Log extends Model
 
     public function user()
     {
-        return $this->hasOne('App\Models\System\User', 'id', 'user_id');
+        return $this->belongsTo('App\Models\System\User', 'user_id');
     }
 
     // 覆盖 model 方法
