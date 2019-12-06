@@ -18,14 +18,16 @@ class LogOperation
      */
     public function handle(Request $request, \Closure $next)
     {
-        if (!Auth::id()) {
-            return $next($request);
-        }
         if ($request->method() !== 'GET') {
             $data = $request->input();
             if (isset($data['_t'])) {
                 unset($data['_t']);
             }
+
+            if (isset($data['password'])) {
+                $data['password'] = '******';
+            }
+
             $log = [
                 'user_id' => Auth::id(),
                 'path' => substr($request->path(), 0, 255),
