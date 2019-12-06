@@ -75,6 +75,9 @@ class User extends Authenticatable
 
     public function hasAccess($permission): bool
     {
+        if ($this->active != 1) {
+            return false;
+        }
         return $this->hasPermissionNames()->contains($permission);
     }
 }
